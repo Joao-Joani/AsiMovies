@@ -19,13 +19,54 @@ export class HomeComponent {
   limit: number = 4; // 4 filmes no maximo por vez
   currentOffset: number = 0; // controle de visualização de filmes
 
+  userRank: string = 'Espectador Iniciante';
+  rankProgress: number = 0;
+  nextLevelMessage: string = '';
+  rankColor: string = '#95a5a6';
+
   constructor(private databaseService: DatabaseService) {}
 
   ngOnInit(){
     this.databaseService.getCollection('movies').subscribe((movies: MovieInterface[])=>{
       this.movies = movies;
+      this.calculateRank();
       this.displayedMovies = this.movies.slice(this.currentOffset, this.currentOffset + this.limit); // exibe os 4 filmes iniciais
     })
+  }
+
+  calculateRank() {
+    const count = this.movies.length;
+  
+    if (count < 10) {
+      this.userRank = 'Espectador Iniciante';
+      this.rankColor = '#95a5a6';
+      this.rankProgress = (count / 10) * 100;
+      this.nextLevelMessage = `Faltam ${10 - count} filmes para o próximo nível!`;
+    } 
+    else if (count < 30) {
+      this.userRank = 'Cinéfilo Amador';
+      this.rankColor = '#3498db';
+      this.rankProgress = ((count - 10) / (30 - 10)) * 100;
+      this.nextLevelMessage = `Faltam ${30 - count} filmes para virar Crítico!`;
+    } 
+    else if (count < 60) {
+      this.userRank = 'Crítico de Cinema';
+      this.rankColor = '#f1c40f';
+      this.rankProgress = ((count - 30) / (60 - 30)) * 100;
+      this.nextLevelMessage = 'Rumo à direção de Hollywood!';
+    } 
+    else if (count < 100) {
+      this.userRank = 'Diretor de Hollywood';
+      this.rankColor = '#e67e22';
+      this.rankProgress = ((count - 60) / (100 - 60)) * 100;
+      this.nextLevelMessage = `Só mais ${100 - count} para zerar o cinema!`;
+    }
+    else {
+      this.userRank = 'Lenda do Cinema';
+      this.rankColor = '#e74c3c';
+      this.rankProgress = 100;
+      this.nextLevelMessage = 'Você é imbatível!';
+    }
   }
 
   deleteMovie(id:string){

@@ -17,6 +17,26 @@
             
             <button type="button" class="add-button" (click)="toggleAddMovieModal()">Adicionar Filme</button>
         </div>
+
+        <div class="rank-card">
+            <div class="rank-info">
+              <div class="rank-badge" [style.background-color]="rankColor">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="rank-texts">
+                <h3>Seu Nível: <span [style.color]="rankColor">{{ userRank }}</span></h3>
+                <p>{{ nextLevelMessage }}</p>
+              </div>
+            </div>
+            
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="rankProgress" [style.background-color]="rankColor"></div>
+            </div>
+            
+            <div class="stats">
+              <span>🎬 {{ movies.length }} Filmes assistidos</span>
+            </div>
+        </div>
   
         <div class="cards">
           <button 
