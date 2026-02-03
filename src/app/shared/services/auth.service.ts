@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
 import { UserInterface } from '../interfaces/user-interface';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,29 @@ export class AuthService {
     .catch((error)=>{
       console.log(error)
     })
+  }
+
+  loginGoogle() {
+    this.auth.signInWithPopup(new GoogleAuthProvider())
+      .then(async (result) => {
+        if (result.user) {
+          const userRef = this.firestore.collection('users').doc(result.user.uid).ref;
+          const doc = await userRef.get();
+          
+          if (!doc.exists) {
+            const userData: UserInterface = {
+              name: result.user.displayName || '',
+              email: result.user.email || '',
+              tipo: 'Usuário'
+            };
+            await this.salvarDados(result.user.uid, userData);
+          }
+          this.router.navigate(['/home']);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   redefinirSenha(email: string){

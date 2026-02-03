@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from '../../services/database.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { MovieInterface } from '../../interfaces/movie-interface';
 
 @Component({
   selector: 'app-add-movie',
@@ -10,6 +11,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 })
 export class AddMovieComponent {
 
+  @Input() movieData: MovieInterface | null = null;
   movieForm!: FormGroup;
   selectedFile: File | null = null; // foto do filme
   previewUrl: string | null = null; // pré visualização da imagem do filme
@@ -27,6 +29,11 @@ export class AddMovieComponent {
       analysis: ['', [Validators.required]],
       photo_path: ['']
     });
+
+    if(this.movieData){
+      this.movieForm.patchValue(this.movieData);
+      this.previewUrl = this.movieData.photo_path;
+    }
   }
 
   setRating(rating: number) {
@@ -51,12 +58,22 @@ export class AddMovieComponent {
     if(this.movieForm.valid){
       const formData = this.movieForm.value;
 
-      this.databaseService.addDocument('movies',formData).then(()=>{
-        console.log('Documento Adicionado!')
-        this.movieForm.reset();
-      }).catch((error)=>{
-        console.log(error)
-      })
+      if(this.movieData && this.movieData.id){
+        this.databaseService.updateDocument('movies', this.movieData.id, formData).then(()=>{
+          console.log('Documento Atualizado!')
+          this.onClose();
+        }).catch((error)=>{
+          console.log(error)
+        })
+      } else {
+        this.databaseService.addDocument('movies',formData).then(()=>{
+          console.log('Documento Adicionado!')
+          this.movieForm.reset();
+          this.onClose();
+        }).catch((error)=>{
+          console.log(error)
+        })
+      }
     }
   }
 

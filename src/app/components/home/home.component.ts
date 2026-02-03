@@ -12,6 +12,7 @@ export class HomeComponent {
   // VARIÁVEIS
 
   showAddMovieModal: boolean = false; // controle de exibição do modal de adição de filme
+  selectedMovieForEdit: MovieInterface | null = null;
   searchQuery: string = ''; // controle de pesquisa de filmes
   displayedMovies: MovieInterface[] = []; // filmes exibidos na tela
   movies: MovieInterface[] = [];
@@ -35,7 +36,13 @@ export class HomeComponent {
     })
   }
 
+  editMovie(movie: MovieInterface) {
+    this.selectedMovieForEdit = movie;
+    this.showAddMovieModal = true;
+  }
+
   toggleAddMovieModal(){
+    this.selectedMovieForEdit = null;
     this.showAddMovieModal = !this.showAddMovieModal; // abre e fecha o modal
   }
 
