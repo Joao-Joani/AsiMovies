@@ -7,7 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AngularFireModule } from '@angular/fire/compat';
-import { environment } from '../environments/enviroment';
+import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { CadastroComponent } from './components/cadastro/cadastro.component';
 import { RecuperarSenhaComponent } from './components/recuperarsenha/recuperarsenha.component';
